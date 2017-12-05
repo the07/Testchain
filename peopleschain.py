@@ -172,7 +172,7 @@ class Node:
         bad_nodes = set()
         data = {
             "index": block.index,
-            "transactions": str[transaction.toJSON for transaction in block.transactions],
+            "transactions": str([transaction.toJSON for transaction in block.transactions]),
             "proof": block.proof,
             "previous_hash": block.previous_hash,
             "timestamp": block.timestamp,
