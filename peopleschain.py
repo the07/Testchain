@@ -273,6 +273,7 @@ class Node:
 
         user_profile = Profile(address)
         self.Peopleschain.users.append(user_profile)
+        self.broadcast_user(user_profile)
         response = {
             "message": "New User Profile Created.",
             "address": address,
@@ -293,10 +294,6 @@ class Node:
             }
             return json.dumps(response)
         return json.dumps(response)
-
-        self.broadcast_user(user_profile)
-
-        return jsonify(response), 201
 
     @app.route('/user/add', methods=['POST'])
     def add_user(self, request):
