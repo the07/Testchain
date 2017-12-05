@@ -52,13 +52,41 @@ class Node:
             self.node_identifier = str(uuid4()).replace('-','')
             self.config['NODE-ID']['node_identifier'] = self.node_identifier
 
-            self.peer_nodes = set(['192.168.43.224'])
+            self.peer_nodes = set(['192.168.43.224']) #TODO: figure out how to deal with first node
             self.config['NODE-ID']['peer_nodes'] = ', '.join(self.peer_nodes)
 
             existing_chain = self.synchronize()
 
             if existing_chain is not None:
-                self.Peopleschain = Blockchain(existing_chain["Blocks"], existing_chain["Users"])
+                # TODO: add functions to initiate transaction and block from JSON
+
+                remote_blocks = []
+                remote_users = []
+                for block in existing_chain["Blocks"]:
+                    current_transactions = []
+                    for block_transaction in existing_chain["Blocks"][block]["transaction"]:
+                        current_amount = block_transaction["amount"]
+                        current_destination = block_transaction["destination"]
+                        current_handle = block_transaction["handle"]
+                        current_data = block_transaction["data"]
+                        current_timestamp = block_transaction["timestamp"]
+                        transaction = Transaction(current_handle, current_data, current_amount, current_destination, current_timestamp)
+                        current_transactions.append(transaction)
+                    current_index = int(block)
+                    current_proof = existing_chain["Blocks"][block]["proof"]
+                    current_block_previous_hash = existing_chain["Blocks"][block]["previous_hash"]
+                    current_block_timestamp = existing_chain["Blocks"][block]["timestamp"]
+                    current_block = Block(current_index, current_transactions, current_proof, current_block_previous_hash, current_block_timestamp)
+                    remote_blocks.append(current_block)
+                for user in existing_chain["Users"]:
+                    current_address = user
+                    current_data = existing_chain["Users"][user]
+                    current_user = Profile(current_address, current_data)
+                    remote_users.append(current_user)
+                self.Peopleschain = Blockchain(remote_blocks, remote_users)
+
+                print ("Blockchain created")
+
             else:
                 self.Peopleschain = Blockchain()
 
@@ -118,7 +146,7 @@ class Node:
         self.request_nodes_from_all()
         bad_nodes = set()
         data = {
-            "host": my_node
+            "host": self.my_node()
         }
 
         for node in self.peer_nodes:
@@ -375,10 +403,36 @@ class Node:
     @app.route('/chain', methods=['GET'])
     def view_chain(self, request):
 
+        unconfimed_transaction_json = {}
+        for each_transaction in self.Peopleschain.unconfimed_transaction:
+            unconfimed_transaction_json[each_transaction.tx_id] = {
+                "handle": each_transaction.handle,
+                "data": each_transaction.data,
+                "amount": each_transaction.amount,
+                "timestamp": each_transaction.timestamp,
+                "destination": each_transaction.destination
+            }
+        blocks_json = {}
+        for each_block in self.Peopleschain.blocks:
+            blocks_json[each_block.index] = {
+                "transactions": [transaction.toJSON() for transaction in each_block.transactions],
+                "timestamp": each_block.timestamp,
+                "proof": each_block.proof,
+                "previous_hash": each_block.previous_hash
+            }
+
+        users_json = {}
+        for each_user in self.Peopleschain.users:
+            users_json[each_user.address] = {
+                "name": each_user.name,
+                "balance": each_user.balance,
+                "data": each_user.data,
+            }
+
         data = {
-            "unconfimed_transaction": str(self.Peopleschain.unconfimed_transaction),
-            "Blocks":  str(self.Peopleschain.blocks),
-            "Users": str(self.Peopleschain.users),
+            "unconfirmed_transaction": unconfimed_transaction_json,
+            "Blocks":  blocks_json,
+            "Users": users_json,
         }
 
         return json.dumps(data)

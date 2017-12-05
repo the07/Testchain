@@ -1,11 +1,14 @@
 class Profile:
 
-    def __init__(self, address):
+    def __init__(self, address, data=None):
         # Add option for a signature ( For security )
         self.address = address
         self.name = None
         self.balance = 100
-        self.data = {}
+        if data is not None:
+            self.data = data
+        else:
+            self.data = {}
 
     def edit_name(self, new_name):
         self.name = new_name

@@ -4,7 +4,7 @@ import json
 
 class Transaction:
 
-    def __init__(self, handle, data, amount, destination=None):
+    def __init__(self, handle, data, amount, destination, timestamp=None):
         """
             Creates a new transaction object.
 
@@ -18,9 +18,11 @@ class Transaction:
         self.handle = handle
         self.data = data
         self.amount = amount
-        self.timestamp = time()
-        if destination:
-            self.destination = destination
+        if timestamp is None:
+            self.timestamp = time()
+        else:
+            self.timestamp = timestamp
+        self.destination = destination
         self.tx_id = self.calculate_tx_id()
 
     def calculate_tx_id(self):
