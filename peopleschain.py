@@ -172,7 +172,7 @@ class Node:
         bad_nodes = set()
         data = {
             "index": block.index,
-            "transactions": str([transaction.toJSON for transaction in block.transactions]),
+            "transactions": [transaction.toJSON() for transaction in block.transactions],
             "proof": block.proof,
             "previous_hash": block.previous_hash,
             "timestamp": block.timestamp,
@@ -301,7 +301,7 @@ class Node:
     def add_user(self, request):
 
         request_body = json.loads(request.content.read())
-        response = self.add_profile(request_body["address"])
+        response, user_profile = self.add_profile(request_body["address"])
         if response is None:
             response = {
                 "message": "User already exists",
