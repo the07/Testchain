@@ -84,7 +84,7 @@ class Node:
                     current_user_data = existing_chain["Users"][user]["data"]
                     current_user_name = existing_chain["Users"][user]["name"]
                     current_user_balance = existing_chain["Users"][user]["balance"]
-                    current_user = Profile(current_user_address, current_user_name, current_user_balance,current_data)
+                    current_user = Profile(current_user_address, current_user_name, current_user_balance,current_user_data)
                     remote_users.append(current_user)
                 self.Peopleschain = Blockchain(remote_blocks, remote_users)
 
@@ -172,7 +172,7 @@ class Node:
         bad_nodes = set()
         data = {
             "index": block.index,
-            "transactions": [transaction.toJSON for transaction in block.transactions],
+            "transactions": str[transaction.toJSON for transaction in block.transactions],
             "proof": block.proof,
             "previous_hash": block.previous_hash,
             "timestamp": block.timestamp,
