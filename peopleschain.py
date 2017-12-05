@@ -461,7 +461,18 @@ class Node:
     @app.route('/block/new', methods=['POST'])
     def register_block(self, request):
         request_body = json.loads(request.content.read())
-        new_block = Block(request_body['index'], request_body['transactions'], request_body['proof'], request_body['previous_hash'], request_body['timestamp'])
+        new_block_transactions = []
+        #TODO: repetition. refer prior to do to extract such data
+        for each_new_transaction in request_body["transactions"]:
+            each_new_transaction_json = json.loads(each_new_transaction)
+            this_amount = each_new_transaction_json["amount"]
+            this_destination = each_new_transaction_json["destination"]
+            this_handle = each_new_transaction_json["handle"]
+            this_data = each_new_transaction_json["data"]
+            this_timestamp = each_new_transaction_json["timestamp"]
+            this_transaction = Transaction(this_handle, this_data, this_amount, this_destination, this_timestamp)
+            new_block_transactions.append(this_transaction)
+        new_block = Block(request_body['index'], this_transaction, request_body['proof'], request_body['previous_hash'], request_body['timestamp'])
         #TODO: Check validity of block, only then add to chain
         self.Peopleschain.add_block(new_block)
         response = {
