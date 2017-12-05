@@ -280,7 +280,7 @@ class Node:
             "address": address,
             "balance": user_profile.balance,
         }
-        return response
+        return response, user_profile
 
     def broadcast_user_change(self, user):
         pass
@@ -288,13 +288,13 @@ class Node:
     @app.route('/create', methods=['GET'])
     def create_profile(self, request):
 
-        response = self.add_profile(self.node_identifier)
+        response, user_profile = self.add_profile(self.node_identifier)
         if response is None:
             response = {
                 "message": "User already exists!",
             }
             return json.dumps(response)
-        self.broadcast_user(user_profile)    
+        self.broadcast_user(user_profile)
         return json.dumps(response)
 
     @app.route('/user/add', methods=['POST'])
