@@ -15,7 +15,7 @@ from uuid import uuid4
 import configparser
 import os.path
 
-FULL_NODE_PORT = 30023
+FULL_NODE_PORT = 30033
 NODES_URL = "http://{}:{}/nodes"
 NEW_NODES_URL = "http://{}:{}/nodes/register"
 NEW_BLOCK_URL = "http://{}:{}/block/new"
