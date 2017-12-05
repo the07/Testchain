@@ -52,7 +52,7 @@ class Node:
             self.node_identifier = str(uuid4()).replace('-','')
             self.config['NODE-ID']['node_identifier'] = self.node_identifier
 
-            self.peer_nodes = set(['192.168.43.224']) #TODO: figure out how to deal with first node
+            self.peer_nodes = set(['192.168.2.10']) #TODO: figure out how to deal with first node
             self.config['NODE-ID']['peer_nodes'] = ', '.join(self.peer_nodes)
 
             existing_chain = self.synchronize()
@@ -271,7 +271,7 @@ class Node:
     def add_profile(self, address):
 
         if address in [user.address for user in self.Peopleschain.users]:
-            return None
+            return None, None
 
         user_profile = Profile(address)
         self.Peopleschain.users.append(user_profile)
