@@ -64,12 +64,13 @@ class Node:
                 remote_users = []
                 for block in existing_chain["Blocks"]:
                     current_transactions = []
-                    for block_transaction in existing_chain["Blocks"][block]["transaction"]:
-                        current_amount = block_transaction["amount"]
-                        current_destination = block_transaction["destination"]
-                        current_handle = block_transaction["handle"]
-                        current_data = block_transaction["data"]
-                        current_timestamp = block_transaction["timestamp"]
+                    for block_transaction in existing_chain["Blocks"][block]["transactions"]:
+                        block_transaction_json = json.loads(block_transaction)
+                        current_amount = block_transaction_json["amount"]
+                        current_destination = block_transaction_json["destination"]
+                        current_handle = block_transaction_json["handle"]
+                        current_data = block_transaction_json["data"]
+                        current_timestamp = block_transaction_json["timestamp"]
                         transaction = Transaction(current_handle, current_data, current_amount, current_destination, current_timestamp)
                         current_transactions.append(transaction)
                     current_index = int(block)
