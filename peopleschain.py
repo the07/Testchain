@@ -75,7 +75,7 @@ class Node:
 
     def my_node(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(('8.8.8.8'), 80)
+        s.connect(('8.8.8.8', 80))
         my_node = s.getsockname()[0]
         s.close()
         return my_node
@@ -101,6 +101,8 @@ class Node:
         bad_nodes = set()
 
         for node in full_nodes:
+            if node == self.my_node():
+                continue
             all_nodes = self.request_nodes(node, FULL_NODE_PORT)
             if all_nodes is not None:
                 full_nodes = full_nodes.union(all_nodes["full_nodes"])
@@ -183,7 +185,7 @@ class Node:
         """ Download blockchain from other nodes, make the longest chain my chain. """
 
         self.request_nodes_from_all()
-
+        self.broadcast_node()
         bad_nodes = set()
         longest = 0
         for node in self.peer_nodes:
