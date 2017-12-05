@@ -15,7 +15,7 @@ from uuid import uuid4
 import configparser
 import os.path
 
-FULL_NODE_PORT = 30019
+FULL_NODE_PORT = 30023
 NODES_URL = "http://{}:{}/nodes"
 NEW_NODES_URL = "http://{}:{}/nodes/register"
 NEW_BLOCK_URL = "http://{}:{}/block/new"
@@ -81,8 +81,10 @@ class Node:
                     remote_blocks.append(current_block)
                 for user in existing_chain["Users"]:
                     current_address = user
-                    current_data = existing_chain["Users"][user]
-                    current_user = Profile(current_address, current_data)
+                    current_user_data = existing_chain["Users"][user]["data"]
+                    current_user_name = existing_chain["Users"][user]["name"]
+                    current_user_balance = existing_chain["Users"][user]["balance"]
+                    current_user = Profile(current_address, current_user_name, current_user_balance,current_data)
                     remote_users.append(current_user)
                 self.Peopleschain = Blockchain(remote_blocks, remote_users)
 
